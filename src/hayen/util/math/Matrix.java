@@ -1,4 +1,4 @@
-package hayen.util;
+package hayen.util.math;
 
 /**
  * Created by Hayen on 15-11-25.
@@ -11,21 +11,21 @@ public class Matrix {
 	public Matrix(int m, int n){
 		_m = m;
 		_n = n;
-		_mat = new double[n][m];
+		_mat = new double[m][n];
 	}
 	public Matrix(int m){ this(m, m); }
 	public Matrix(Matrix mat){
 		this(mat._m, mat._n);
 		for (int m = 0; m < _m; m++)
 			for (int n = 0; n < _n; n++)
-				_mat[n][m] += mat._mat[n][m];
+				_mat[m][n] = mat._mat[m][n];
 	}
 
 	public double get(int m, int n){
-		return _mat[n][m];
+		return _mat[m][n];
 	}
 	public Matrix set(int m, int n, double val){
-		_mat[n][m] = val;
+		_mat[m][n] = val;
 		return this;
 	}
 
@@ -53,7 +53,7 @@ public class Matrix {
 		Matrix r = new Matrix(this);
 		for (int m = 0; m < r._m; m++)
 			for (int n = 0; n < r._n; n++)
-				r._mat[n][m] += b._mat[n][m];
+				r._mat[m][n] += b._mat[m][n];
 		return r;
 	}
 
@@ -74,9 +74,12 @@ public class Matrix {
 	public double det() throws MatrixNonCompatibleException {
 		if (!isSquare())
 			throw new MatrixNonCompatibleException();
-		return 0; //TODO
+		
+		// TODO
+		double d = 0;
+		return d;
 	}
-
+	
 	public static Matrix Identity(int m){
 		Matrix r = new Matrix(m);
 		for (int i = 0; i < m; i++)
@@ -84,6 +87,22 @@ public class Matrix {
 		return r;
 	}
 
+	@Override
+	public String toString(){
+		String s = "";
+		
+		for (int m = 0; m < _m; m++){
+			for (int n = 0; n < _n; n++)
+				s += _mat[m][n] + "\t";
+			s += "\n";
+		}
+		
+		return s;
+	}
+	
+	public int getWidth(){ return _m; }
+	public int getHeight(){ return _n; }
+	
 	public class MatrixNonCompatibleException extends Exception { public MatrixNonCompatibleException() { super("The matrix are not compatible for this operation"); } }
 
 }

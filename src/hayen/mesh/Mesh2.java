@@ -1,6 +1,7 @@
 package hayen.mesh;
 
-import hayen.mesh.hayen.mesh.virtual.Mesh;
+import hayen.mesh.virtual.Mesh;
+import hayen.util.Transform;
 
 import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
@@ -74,18 +75,16 @@ public abstract class Mesh2 extends Mesh {
 		}
 
 		@Override
-		public void draw(Graphics g, AffineTransform transform) {
-			AffineTransform t = new AffineTransform(transform);
-			t.preConcatenate(_transform);
+		public void draw(Graphics g, Transform transform) {
 			if (showFaces())
 				for (Face2 f : _faces)
-					f.draw(g, t);
+					f.draw(g, transform);
 			if (showEdges())
 				for (Edge2 e : _edges)
-					e.draw(g, t);
+					e.draw(g, transform);
 			if (showVertices())
 				for (Vertex2 v : _vertices)
-					v.draw(g, t);
+					v.draw(g, transform);
 		}
 
 		@Override

@@ -1,7 +1,8 @@
 package hayen.mesh;
 
-import hayen.mesh.hayen.mesh.virtual.Vertex;
+import hayen.mesh.virtual.Vertex;
 import hayen.util.Transform;
+import hayen.util.Transform2;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -53,11 +54,12 @@ public class Vertex2 extends Vertex {
 
 	@Override
 	public void draw(Graphics g, Transform transform) {
+		Transform2 t2 = (Transform2)transform;
 		Color colorBuffer = g.getColor();
 		g.setColor(getColor());
 		if (_ellipse == null)
 			_ellipse = new Ellipse2D.Double(_x - getRadius(), _y - getRadius(), getRadius()/2, getRadius()/2);
-		((Graphics2D)g).fill(transform.createTransformedShape(_ellipse));
+		((Graphics2D)g).fill(t2.createTransformedShape(_ellipse));
 		g.setColor(colorBuffer);
 	}
 	

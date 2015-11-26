@@ -1,4 +1,4 @@
-package hayen.mesh.hayen.mesh.virtual;
+package hayen.mesh.virtual;
 
 import hayen.util.IDrawable;
 
