@@ -1,5 +1,7 @@
 package hayen.mesh;
 
+import hayen.mesh.hayen.mesh.virtual.Mesh;
+
 import java.awt.Graphics;
 import java.awt.geom.AffineTransform;
 
@@ -40,7 +42,7 @@ public abstract class Mesh2 extends Mesh {
 		_transform.rotate(a);
 		return this;
 	}
-	
+
 	/**
 	 * Return a copy of the transform modifying the mesh
 	 * @return the affine transformation
@@ -73,27 +75,35 @@ public abstract class Mesh2 extends Mesh {
 
 		@Override
 		public void draw(Graphics g, AffineTransform transform) {
-			// TODO Auto-generated method stub
-			
+			AffineTransform t = new AffineTransform(transform);
+			t.preConcatenate(_transform);
+			if (showFaces())
+				for (Face2 f : _faces)
+					f.draw(g, t);
+			if (showEdges())
+				for (Edge2 e : _edges)
+					e.draw(g, t);
+			if (showVertices())
+				for (Vertex2 v : _vertices)
+					v.draw(g, t);
 		}
 
 		@Override
-		public int nbVertices() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
+		public int nbVertices() { return _vertices.length; }
+		@Override
+		public int nbEdges() { return _edges.length; }
+		@Override
+		public int nbFaces() { return _faces.length; }
 
 		@Override
-		public int nbEdges() {
-			// TODO Auto-generated method stub
-			return 0;
+		public double area(){
+			double a = 0;
+			for (Face2 f : _faces)
+				a += f.area();
+			return a;
 		}
-
 		@Override
-		public int nbFaces() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		
+		public double volume(){ return 0; }
+
 	}
 }

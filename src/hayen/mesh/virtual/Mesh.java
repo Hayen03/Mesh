@@ -1,15 +1,19 @@
-package hayen.mesh;
+package hayen.mesh.hayen.mesh.virtual;
+
+import hayen.util.IDrawable;
 
 /**
  * Base Mesh class for all Mesh class. Regroup all common properties and methods of a mesh
  * @author Hayen
  */
-public abstract class Mesh implements IDrawable{
+public abstract class Mesh implements IDrawable {
 	
 	private boolean _showFaces, _showEdges, _showVertices;
+	private boolean _isClosed;
 	
 	public Mesh(){
 		_showFaces = _showEdges = _showVertices = true;
+		_isClosed = false;
 	}
 	
 	/**
@@ -51,7 +55,7 @@ public abstract class Mesh implements IDrawable{
 	}
 	/**
 	 * Set if this mesh should render the edges on rendering
-	 * @param showFace : should the edges be drawn?
+	 * @param showEdge : should the edges be drawn?
 	 * @return this
 	 */
 	public Mesh setShowEdges(boolean showEdge){
@@ -60,7 +64,7 @@ public abstract class Mesh implements IDrawable{
 	}
 	/**
 	 * Set if this mesh should render the vertices on rendering
-	 * @param showFace : should the vertices be drawn?
+	 * @param showVertices : should the vertices be drawn?
 	 * @return this
 	 */
 	public Mesh setShowVertices(boolean showVertices){
@@ -83,5 +87,31 @@ public abstract class Mesh implements IDrawable{
 	 * @return : amount of faces
 	 */
 	public abstract int nbFaces();
+
+	/**
+	 * compute the value of the surface of the mesh
+	 * @return the area
+	 */
+	public abstract double area();
+	/**
+	 * Compute the internal volume of a closed mesh
+	 * @return the volume
+	 */
+	public abstract double volume();
+
+	/**
+	 * Return true if the mesh form a closed shape
+	 * @return
+	 */
+	public boolean isClosed(){ return _isClosed; }
+	/**
+	 * Set if this mesh is closed or not
+	 * @param isClosed
+	 * @return
+	 */
+	protected Mesh setIsClosed(boolean isClosed){
+		_isClosed = isClosed;
+		return this;
+	}
 
 }
