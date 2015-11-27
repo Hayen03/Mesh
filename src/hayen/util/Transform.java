@@ -1,7 +1,5 @@
 package hayen.util;
 
-import java.awt.*;
-
 /**
  * Abstract construction of a Transform object. Serve as the base class for every Transform, be it in 2 dimension, or 3, or even 4, that I make.
  * @author Hayen
@@ -35,11 +33,7 @@ public abstract class Transform<T extends Transform> {
 	 * If this flag is active, it means the scale of this transform is null
 	 * ( scale == 0 )
 	 */
-	public static final int TYPE_NULL_SCALE = 16;
-	/**
-	 * This state means that the transform apply every type transformation
-	 */
-	public static final int TYPE_GENERAL = TYPE_TRANSLATION | TYPE_SCALE | TYPE_SHEAR;
+	public static final int TYPE_NULL_SCALE = 16 | TYPE_SCALE;
 
 	private int _dimension = 0;
 
@@ -50,7 +44,6 @@ public abstract class Transform<T extends Transform> {
 	 * @see #TYPE_TRANSLATION
 	 * @see #TYPE_SHEAR
 	 * @see #TYPE_NULL_SCALE
-	 * @see #TYPE_GENERAL
 	 * @see #TYPE_UNKNOWN
 	 */
 	private int _type;

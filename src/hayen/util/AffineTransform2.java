@@ -1,11 +1,11 @@
 package hayen.util;
 
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-
 import hayen.util.math.Matrix;
 import hayen.util.math.Matrix3x3;
 import hayen.util.math.Vector2;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 /**
  * Created by Hayen on 15-11-25.
@@ -44,9 +44,37 @@ public class AffineTransform2 extends Transform2<AffineTransform2>{
 	public AffineTransform2 shear(Vector2 v) { return shear(v.getX(), v.getY()); }
 	@Override
 	public AffineTransform2 shear(double v) { return shear(v, v); }
+
+	/**
+	 * Apply a rotation.
+	 * <p>
+	 *     The rotation C is applied after all the previous transformation T, such as M = C*T	 *
+	 * </p>
+	 * @param theta : the angle of the rotation, in radians
+	 * @return
+	 */
 	@Override
 	public AffineTransform2 rotate(double theta) {
-		// TODO implementation
+
+		int type = getType();
+		double M00 = _mat[0][0], M01 = _mat[0][1], M02 = _mat[0][2], M10 = _mat[1][0], M11 = _mat[1][1], M12 = _mat[1][2];
+		double cos = Math.cos(theta), sin = Math.sin(theta);
+
+		/*
+		TODO: add some special handling for quadrant rotation
+		 */
+
+		if (isTranslation()){
+			_mat[0][2] = cos*M02 + sin*M12;
+			_mat[1][2] = cos*M12 - sin*M02;
+		}
+		if (isShear() || isScale()){
+			_mat[0][0] = cos*M00 + sin*M10;
+			_mat[0][1] = cos*M01 + sin*M11;
+			_mat[1][0] = cos*M10 - sin*M00;
+			_mat[1][1] = cos*M11 - sin*M01;
+		}
+		updateType();
 		return this;
 	}
 	public AffineTransform2 rotate(double theta, Vector2 anchor){
