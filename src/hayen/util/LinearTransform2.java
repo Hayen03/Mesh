@@ -74,11 +74,6 @@ public class LinearTransform2 extends Transform2 {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	@Override
-	public double getRotation() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public Matrix getMatrix() {

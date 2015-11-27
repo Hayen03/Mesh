@@ -21,7 +21,6 @@ public abstract class Transform2 <T extends Transform2> extends Transform<T> {
 	public abstract Vector2 getShear();
 	public abstract double getShearX();
 	public abstract double getShearY();
-	public abstract double getRotation();
 
 	public abstract Matrix getMatrix();
 	public abstract Shape createTransformedShape(Shape shape);
