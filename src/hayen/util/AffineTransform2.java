@@ -17,11 +17,18 @@ public class AffineTransform2 extends Transform2<AffineTransform2>{
 	public AffineTransform2(){
 		_mat = new double[2][3];
 		_mat[0][0] = _mat[1][1] = 1;
+		setType(TYPE_UNKNOWN);
+	}
+	public AffineTransform2(AffineTransform2 b){
+		_mat = new double[2][3];
+		for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 3; j++)
+				this._mat[i][j] = b._mat[i][j];
+		setType(TYPE_UNKNOWN);
 	}
 	
 	@Override
 	public AffineTransform2 shear(double x, double y) {
-		int type = getType();
 		double M00 = _mat[0][0], M01 = _mat[0][1], M10 = _mat[1][0], M11 = _mat[1][1], M02 = _mat[0][2], M12 = _mat[1][2];
 
 		if (isShear()){
@@ -56,13 +63,18 @@ public class AffineTransform2 extends Transform2<AffineTransform2>{
 	@Override
 	public AffineTransform2 rotate(double theta) {
 
-		int type = getType();
 		double M00 = _mat[0][0], M01 = _mat[0][1], M02 = _mat[0][2], M10 = _mat[1][0], M11 = _mat[1][1], M12 = _mat[1][2];
 		double cos = Math.cos(theta), sin = Math.sin(theta);
 
-		/*
-		TODO: add some special handling for quadrant rotation
-		 */
+		/* Special handling for quadrant rotation */
+		if (sin == 1)
+			rotate90();
+		else if (sin == -1)
+			rotate270();
+		else if (cos == 1)
+			return this;
+		else if (cos == -1)
+			rotate180();
 
 		if (isTranslation()){
 			_mat[0][2] = cos*M02 + sin*M12;
@@ -136,10 +148,19 @@ public class AffineTransform2 extends Transform2<AffineTransform2>{
 														_mat[1][0], 	_mat[1][1], 	_mat[1][2],
 														0, 				0, 				1); }
 	
+	/**
+	 * T*M
+	 */
 	@Override
 	public AffineTransform2 transform(AffineTransform2 t) {
-		// TODO Auto-generated method stub
-		return null;
+		AffineTransform2 r = new AffineTransform2();
+		r._mat[0][0] = t._mat[0][0]*this._mat[0][0] + t._mat[0][1]*this._mat[1][0];
+		r._mat[0][1] = t._mat[0][0]*this._mat[0][1] + t._mat[0][1]*this._mat[1][1];
+		r._mat[0][2] = t._mat[0][0]*this._mat[0][2] + t._mat[0][1]*this._mat[1][2] + t._mat[0][2];
+		r._mat[1][0] = t._mat[1][0]*this._mat[0][0] + t._mat[1][1]*this._mat[1][0];
+		r._mat[1][1] = t._mat[1][0]*this._mat[0][1] + t._mat[1][1]*this._mat[1][1];
+		r._mat[1][2] = t._mat[1][0]*this._mat[0][2] + t._mat[1][1]*this._mat[1][2] + t._mat[1][2];
+		return r;
 	}
 	@Override
 	public AffineTransform2 pretransform(AffineTransform2 t) { return t.transform(this); }
@@ -177,4 +198,32 @@ public class AffineTransform2 extends Transform2<AffineTransform2>{
 	public boolean isShear(){ return (getType() & TYPE_SHEAR) == TYPE_SHEAR; }
 	public boolean isIdentity(){ return getType() == TYPE_NONE; }
 
+	public AffineTransform2 rotate90(){
+		double M00 = _mat[0][0], M01 = _mat[0][1], M10 = _mat[1][0], M11 = _mat[1][1], M02 = _mat[0][2], M12 = _mat[1][2];
+		_mat[0][0] = M10; _mat[0][1] = M11; _mat[0][2] = M12;
+		_mat[1][0] = -M00; _mat[1][1] = -M01; _mat[1][2] = -M02;
+		return this;
+	}
+	public AffineTransform2 rotate180(){
+		double M00 = _mat[0][0], M01 = _mat[0][1], M10 = _mat[1][0], M11 = _mat[1][1], M02 = _mat[0][2], M12 = _mat[1][2];
+		_mat[0][0] = -M10; _mat[0][1] = -M11; _mat[0][2] = -M12;
+		_mat[1][0] = -M00; _mat[1][1] = -M01; _mat[1][2] = -M02;
+		return this;
+	}
+	public AffineTransform2 rotate270(){
+		double M00 = _mat[0][0], M01 = _mat[0][1], M10 = _mat[1][0], M11 = _mat[1][1], M02 = _mat[0][2], M12 = _mat[1][2];
+		_mat[0][0] = -M10; _mat[0][1] = -M11; _mat[0][2] = -M12;
+		_mat[1][0] = M00; _mat[1][1] = M01; _mat[1][2] = M02;
+		return this;
+	}
+	
+	public AffineTransform2 flipX(){
+		_mat[0][0] *= -1; _mat[0][1] *= -1; _mat[0][2] *= -1;
+		return this;
+	}
+	public AffineTransform2 flipY(){
+		_mat[1][0] *= -1; _mat[1][1] *= -1; _mat[1][2] *= -1;
+		return this;
+	}
+	
 }
