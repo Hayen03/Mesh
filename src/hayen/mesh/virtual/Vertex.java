@@ -1,13 +1,11 @@
 package hayen.mesh.virtual;
 
-import hayen.util.IDrawable;
-
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Created by Hayen on 15-11-24.
  */
-public abstract class Vertex implements IDrawable{
+public abstract class Vertex{
 
 	private Color _color;
 	private double _radius = 0;

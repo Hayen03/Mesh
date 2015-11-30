@@ -1,16 +1,8 @@
 package hayen.mesh;
 
-import hayen.util.IDrawable;
-import hayen.util.Transform;
-import hayen.util.Transform2;
+import hayen.mesh.virtual.Edge;
 
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
-
-public class Edge2 implements IDrawable {
+public class Edge2 extends Edge{
 	
 	private Vertex2 _p1, _p2;
 //	private double _size;
@@ -33,14 +25,14 @@ public class Edge2 implements IDrawable {
 		return this;
 	}
 
-	@Override
+	/*
 	public void draw(Graphics g, Transform transform) {
 		Graphics2D g2 = (Graphics2D)g;
 		Transform2 t2 = (Transform2)transform;
 		g2.setPaint(new GradientPaint(_p1.getPoint(), _p1.getColor(), _p2.getPoint(), _p2.getColor()));
 		g2.draw(t2.createTransformedShape(new Line2D.Double(_p1.getX(), _p1.getY(), _p2.getX(), _p2.getY())));
 	}
-
+*/
 	public double length(){ return 0; }
 	
 }

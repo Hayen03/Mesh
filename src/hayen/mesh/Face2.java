@@ -1,19 +1,13 @@
 package hayen.mesh;
 
-import hayen.util.IDrawable;
-import hayen.util.Transform;
+import hayen.mesh.virtual.Face;
+import java.awt.Shape;
 
-import java.awt.Graphics;
-import java.awt.geom.AffineTransform;
-
-public class Face2 implements IDrawable {
+public abstract class Face2 extends Face implements Shape{
 	
 	@Override
-	public void draw(Graphics g, Transform transform) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public double area(){ return 0; }
-
+	
+	// class Tri
+	
 }

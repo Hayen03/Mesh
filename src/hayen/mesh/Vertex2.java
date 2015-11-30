@@ -1,20 +1,15 @@
 package hayen.mesh;
 
 import hayen.mesh.virtual.Vertex;
-import hayen.util.Transform;
-import hayen.util.Transform2;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 public class Vertex2 extends Vertex {
 
 	private double _x, _y;
-	private Ellipse2D.Double _ellipse = null;
+//	private Ellipse2D.Double _ellipse = null;
 	
 	public Vertex2(double x, double y, Color color){
 		super(color);
@@ -32,27 +27,22 @@ public class Vertex2 extends Vertex {
 	
 	public Vertex2 setX(double x){
 		_x = x;
-		_ellipse = null;
+//		_ellipse = null;
 		return this;
 	}
 	public Vertex2 setY(double y){
 		_y = y;
-		_ellipse = null;
+//		_ellipse = null;
 		return this;
 	}
 	public Vertex2 setPoint(Point point){
 		_x = point.getX();
 		_y = point.getY();
-		_ellipse = null;
+//		_ellipse = null;
 		return this;
 	}
-	@Override
-	public Vertex setRadius(double r){
-		_ellipse = null;
-		return super.setRadius(r);
-	}
 
-	@Override
+/*
 	public void draw(Graphics g, Transform transform) {
 		Transform2 t2 = (Transform2)transform;
 		Color colorBuffer = g.getColor();
@@ -62,6 +52,7 @@ public class Vertex2 extends Vertex {
 		((Graphics2D)g).fill(t2.createTransformedShape(_ellipse));
 		g.setColor(colorBuffer);
 	}
+	*/
 	
 	public double distanceSqr(double x, double y){ return (_x+x)*(_x+x) + (_y+y)*(_y+y); }
 	public double distanceSqr(Vertex v){
