@@ -11,50 +11,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Mesh2 extends Mesh implements Shape {
-	
-	private AffineTransform _transform;
-	
-	public Mesh2(){
-		_transform = new AffineTransform();
-	}
-	
-	/**
-	 * Scale the mesh by x on the x-axis and y on the y-axis without deforming the base mesh
-	 * @param x : the scaling factor on the x-axis
-	 * @param y : the scaling factor on the y-axis
-	 * @return this
-	 */
-	public Mesh2 scale(double x, double y){
-		_transform.scale(x, y);
-		return this;
-	}
-	/**
-	 * Translate the mesh by x on the x-axis and y on the y-axis
-	 * @param x : the amount to translate on the x-axis
-	 * @param y : the amount to translate on the y-axis
-	 * @return this
-	 */
-	public Mesh2 translate(double x, double y){
-		_transform.translate(x, y);
-		return this;
-	}
-	/**
-	 * Rotate the mesh by a radian without deforming the base mesh
-	 * @param a : the angle, in radian
-	 * @return this
-	 */
-	public Mesh2 rotate(double a){
-		_transform.rotate(a);
-		return this;
-	}
-
-	/**
-	 * Return a copy of the transform modifying the mesh
-	 * @return the affine transformation
-	 */
-	public AffineTransform getTransform(){ return new AffineTransform(_transform); }
 	
 	/**
 	 * BakedMesh in 2 dimension implementation. The vertices, edges and faces cannot be modified
@@ -210,7 +171,22 @@ public abstract class Mesh2 extends Mesh implements Shape {
 		@Override
 		public PathIterator getPathIterator(AffineTransform at) {
 			// TODO Auto-generated method stub
-			return null;
+			
+			/* trouve les arretes exterieurs
+			 * Une arrete est exterieur si elle est utilise que par une seule face
+			*/
+			List<Edge2> outsideEdge = new LinkedList<Edge2>();
+			int nbFace = 0;
+			for (Edge2 e : _edges){
+				for (Face2 f : _faces){
+					if (f.hasEdge(e))
+						nbFace++;
+				}
+				if (nbFace == 1)
+					outsideEdge.add(e);
+				nbFace = 0;
+			}
+			return new MeshPathIterator(outsideEdge, at != null ? new AffineTransform(at) : null);
 		}
 
 		@Override
@@ -220,4 +196,106 @@ public abstract class Mesh2 extends Mesh implements Shape {
 		}
 		
 	}
+	
+	private class MeshPathIterator implements PathIterator {
+
+		static final int SEG_END = -1;
+		
+		private List<Edge2> edges;
+		private Edge2 courant;
+		private int type = SEG_END;
+		private AffineTransform transform;
+		
+		private MeshPathIterator(List<Edge2> e, AffineTransform at){
+			edges = e;
+			transform = at;
+		}
+		
+		@Override
+		public int getWindingRule() {
+			return PathIterator.WIND_EVEN_ODD;
+		}
+
+		@Override
+		public boolean isDone() {
+			return edges.size() != 0;
+		}
+
+		@Override
+		public void next() {
+			if (courant == null || type == SEG_END){
+				courant = edges.get(0);
+				type = PathIterator.SEG_MOVETO;
+			}
+			else if (type == SEG_LINETO || type == SEG_MOVETO){
+					
+				Edge2 n = null;
+				Iterator<Edge2> it = edges.iterator();
+				boucle:
+					while (it.hasNext()){ // trouver un segment qui se connecte au precedent
+						if ((n = it.next().connected(courant)) != null){
+							it.remove();
+							break boucle;
+						}
+					}
+
+				if (n == null) // s'il n'y avait aucun segment qui se connectait
+					type = SEG_END;
+				else { // s'il y en avait un
+					courant = n;
+					type = SEG_LINETO;
+				}
+					
+			}
+			
+		}
+
+		@Override
+		public int currentSegment(float[] coords) {
+			switch (type){
+			case SEG_LINETO:
+			case SEG_MOVETO:
+				coords[0] = (float)courant.getVertex1().getX();
+				coords[1] = (float)courant.getVertex1().getY();
+				if (transform != null)
+					transform.transform(coords, 0, coords, 0, 2);
+				break;
+			case SEG_END:	
+				coords[0] = (float)courant.getVertex2().getX();
+				coords[1] = (float)courant.getVertex2().getY();
+				if (transform != null)
+					transform.transform(coords, 0, coords, 0, 2);
+				return SEG_LINETO;
+			default:
+				// TODO error or something
+				break;
+			}
+			return type;
+		}
+
+		@Override
+		public int currentSegment(double[] coords) {
+			switch (type){
+			case SEG_LINETO:
+			case SEG_MOVETO:
+				coords[0] = courant.getVertex1().getX();
+				coords[1] = courant.getVertex1().getY();
+				if (transform != null)
+					transform.transform(coords, 0, coords, 0, 2);
+				break;
+			case SEG_END:	
+				coords[0] = courant.getVertex2().getX();
+				coords[1] = courant.getVertex2().getY();
+				if (transform != null)
+					transform.transform(coords, 0, coords, 0, 2);
+				return SEG_LINETO;
+			default:
+				// TODO error or something
+				break;
+			}
+			return type;
+		}
+		
+	}
+	
 }

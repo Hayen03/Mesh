@@ -5,4 +5,5 @@ package hayen.mesh.virtual;
  */
 public abstract class Face {
 	public abstract double area();
+	public abstract boolean hasEdge(Edge e);
 }

@@ -35,4 +35,19 @@ public class Edge2 extends Edge{
 */
 	public double length(){ return 0; }
 	
+	public boolean equals(Vertex2 v1, Vertex2 v2){
+		return (v1 == _p1 && v2 == _p2) || (v1 == _p2 && v2 == _p1);
+	}
+	public boolean equals(Edge2 e){
+		return this.equals(e._p1, e._p2);
+	}
+	
+	public Edge2 connected(Edge2 e){
+		if (e._p1 == this._p2)
+			return e;
+		else if (e._p2 == this._p2)
+			return new Edge2(e._p2, e._p1);
+		return null;
+	}
+	
 }
